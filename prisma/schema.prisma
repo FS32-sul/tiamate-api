@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model categorias {
+  id       Int        @id @default(autoincrement())
+  nome     String     @db.VarChar(20)
+  produtos produtos[]
+}
+
+model depoimentos {
+  id       Int    @id @default(autoincrement())
+  nome     String @db.VarChar(50)
+  imagem   String @db.VarChar(255)
+  texto    String
+  estrelas Int
+}
+
+model interessados {
+  id       Int      @id @default(autoincrement())
+  nome     String   @db.VarChar(50)
+  email    String   @db.VarChar(50)
+  telefone String   @db.VarChar(20)
+  cidade   String   @db.VarChar(50)
+  estado   String   @db.VarChar(50)
+  como     String   @db.VarChar(50)
+  data     DateTime @default(now()) @db.Timestamp(6)
+}
+
+model produtos {
+  id           Int        @id @default(autoincrement())
+  nome         String     @db.VarChar(30)
+  imagem       String     @db.VarChar(255)
+  categoria_id Int
+  categorias   categorias @relation(fields: [categoria_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "produtos_fk3")
+}
+
+model unidades {
+  id       Int    @id @default(autoincrement())
+  nome     String @db.VarChar(100)
+  endereco String @db.VarChar(100)
+  horario  String @db.VarChar(50)
+  telefone String @db.VarChar(20)
+}
+
+model usuarios {
+  id    Int    @id @default(autoincrement())
+  nome  String @db.VarChar(30)
+  email String @unique @db.VarChar(50)
+  senha String @db.VarChar(255)
+}
