@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const usuarioRoutes = require("./src/routes/usuarioRoutes");
+const { login } = require("./src/controllers/usuarioController");
+const { rotaProtegida } = require("./src/middlewares");
 
 const app = express();
 
@@ -15,7 +17,9 @@ app.get("/", (req, res) => {
     });
 });
 
-app.use("/usuarios", usuarioRoutes);
+app.post("/login", login);
+
+app.use("/usuarios", rotaProtegida, usuarioRoutes);
 
 
 // quando a rota não for encontrada cai aqui
