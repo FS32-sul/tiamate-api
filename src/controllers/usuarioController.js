@@ -7,6 +7,9 @@ async function buscar(req, res) {
         const linhas = await PRISMACLIENT.usuarios.findMany({
             orderBy: {
                 id: "asc"
+            },
+            omit:{
+                senha: true
             }
         });
         res.status(200).json(linhas);
