@@ -66,19 +66,6 @@ async function editar(req, res) {
             dados.senha = await bcrypt.hash(dados.senha, 10);
         }
 
-        const emailExiste = await PRISMACLIENT.usuarios.count({
-            where: {
-                email: dados.email
-            }
-        });
-
-        if (emailExiste > 0) {
-            res.status(200).json({
-                mensagem: "Email já cadastrado"
-            });
-            return;
-        }
-
         const linha = await PRISMACLIENT.usuarios.update({
             data: dados,
             where: {
@@ -105,15 +92,29 @@ async function editar(req, res) {
 
 async function deletar(req, res) {
     try {
-        await PRISMACLIENT.usuarios.delete({
+
+        const existe = await PRISMACLIENT.usuarios.count({
             where: {
                 id: Number(req.params.id)
             }
-        });
+        })
 
-        res.status(200).json({
-            mensagem: "Registro apagado com sucesso"
-        });
+        if(existe > 0){
+            await PRISMACLIENT.usuarios.delete({
+                where: {
+                    id: Number(req.params.id)
+                }
+            });
+    
+            res.status(200).json({
+                mensagem: "Registro apagado com sucesso"
+            });
+        }else{
+            res.status(200).json({
+                mensagem: "Registro já foi apagado"
+            });
+        }
+
 
     } catch (error) {
         res.status(500).json({
